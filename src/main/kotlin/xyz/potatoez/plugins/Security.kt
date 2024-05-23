@@ -13,7 +13,6 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.h2.engine.Session
 
 fun Application.configureSecurity() {
     // Please read the jwt property from the config file if you are using EngineMain
