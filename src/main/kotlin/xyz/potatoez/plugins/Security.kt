@@ -11,6 +11,9 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.h2.engine.Session
 
 fun Application.configureSecurity() {
     // Please read the jwt property from the config file if you are using EngineMain
@@ -18,6 +21,13 @@ fun Application.configureSecurity() {
     val jwtDomain = "https://jwt-provider-domain/"
     val jwtRealm = "ktor sample app"
     val jwtSecret = "secret"
+    val clientId = environment.config.property("ktor.deployment.client_id").getString()
+    val clientSecret = environment.config.property("ktor.deployment.client_secret").getString()
+
+    install(Sessions) {
+        cookie<UserSession>("SESSION")
+    }
+
     authentication {
         jwt {
             realm = jwtRealm
@@ -62,8 +72,8 @@ fun Application.configureSecurity() {
                     authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
                     accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
                     requestMethod = HttpMethod.Post,
-                    clientId = System.getenv("GOOGLE_CLIENT_ID"),
-                    clientSecret = System.getenv("GOOGLE_CLIENT_SECRET"),
+                    clientId = clientId,
+                    clientSecret = clientSecret,
                     defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile")
                 )
             }
@@ -71,18 +81,18 @@ fun Application.configureSecurity() {
         }
     }
     routing {
-        authenticate("myauth1") {
-            get("/protected/route/basic") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
-            }
-        }
-        authenticate("myauth2") {
-            get("/protected/route/form") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
-            }
-        }
+//        authenticate("myauth1") {
+//            get("/protected/route/basic") {
+//                val principal = call.principal<UserIdPrincipal>()!!
+//                call.respondText("Hello ${principal.name}")
+//            }
+//        }
+//        authenticate("myauth2") {
+//            get("/protected/route/form") {
+//                val principal = call.principal<UserIdPrincipal>()!!
+//                call.respondText("Hello ${principal.name}")
+//            }
+//        }
         authenticate("auth-oauth-google") {
             get("login") {
                 call.respondRedirect("/callback")
@@ -98,3 +108,15 @@ fun Application.configureSecurity() {
 }
 
 class UserSession(accessToken: String)
+
+@Serializable
+data class UserInfo(
+    val id: String,
+    val name: String,
+    @SerialName("given_name")
+    val givenName: String,
+    @SerialName("family_name")
+    val familyName: String,
+    val picture: String,
+    val locale: String
+)
