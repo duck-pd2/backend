@@ -20,6 +20,7 @@ application {
 
 repositories {
     mavenCentral()
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
@@ -41,5 +42,12 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     runtimeOnly("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.github.smiley4:ktor-swagger-ui:2.10.0")
 
+    // mongodb server side
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
+
+    //Koin Dependency Injection
+    implementation("io.insert-koin:koin-ktor:3.6.0-Beta4")
+    implementation("io.insert-koin:koin-logger-slf4j:3.6.0-Beta4")
 }
