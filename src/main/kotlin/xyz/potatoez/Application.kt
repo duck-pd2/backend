@@ -1,5 +1,6 @@
 package xyz.potatoez
 
+import ch.qos.logback.classic.LoggerContext
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
@@ -11,6 +12,8 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import org.slf4j.LoggerFactory
+import org.slf4j.event.Level
 import xyz.potatoez.plugins.*
 import java.time.Clock
 
@@ -36,7 +39,9 @@ fun Application.module() {
         .build()
     val client = MongoClient.create(clientSettings)
     val database = client.getDatabase(environment.config.property("ktor.database.name").getString())
-    println(database)
+
+    val loggerContent = LoggerFactory.getILoggerFactory() as LoggerContext
+    loggerContent.getLogger("org.mongodb.driver").level = ch.qos.logback.classic.Level.OFF
 
     configureSecurity(jwtConfig, googleConfig, httpClient)
 //    configureHTTP()

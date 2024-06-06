@@ -26,14 +26,11 @@ fun Application.configureRouting(
     val repository: UserRepository = UserRepositoryImpl(database)
     routing {
         get("/") {
-            call.respondText("Hello world")
+            call.respondRedirect("/hello_world")
         }
-        get("/home") {
-            val principal = call.principal<JWTPrincipal>() ?: run {
-                call.respondText("Not logged in")
-                return@get
-            }
-            call.respondText("Hello, ${principal}!")
+
+        get("/hello_world") {
+            call.respondText("Hello World!")
         }
 
         authenticate(jwtConfig.name) {
@@ -47,7 +44,7 @@ fun Application.configureRouting(
                     return@get
                 }
                 val userInfo = getUserInfo(accessToken, oauthConfig, httpClient)
-                call.respondText("Hi, ${userInfo.name}!")
+                call.respond(mapOf("name" to userInfo.givenName, "avatar" to userInfo.picture))
             }
         }
         authenticate(oauthConfig.name) {
@@ -60,11 +57,11 @@ fun Application.configureRouting(
                 (call.principal() as OAuthAccessTokenResponse.OAuth2?)?.let { principal ->
                     val accessToken = principal.accessToken
                     val refreshToken = principal.refreshToken ?: ""
+                    println(refreshToken)
                     val info = getUserInfo(accessToken, oauthConfig, httpClient)
-                    val userReq: UserRequest = UserRequest(info.name, refreshToken, info)
+                    val userReq = UserRequest(info.name, refreshToken, info)
                     val userId = repository.createUser(userReq.toDomain())
                     val jwtToken = jwtConfig.createToken(clock, accessToken, userId,3600)
-//                    call.respondText(jwtToken, ContentType.Text.Plain)
                     call.respond(mapOf("token" to jwtToken))
                 }
             }
