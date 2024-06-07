@@ -39,7 +39,7 @@ fun Application.configureRouting(
                     call.respond(HttpStatusCode.Forbidden, "Not logged in")
                     return@get
                 }
-                val accessToken = principal.getClaim("google_access_token", String::class) ?: run {
+                val accessToken = principal.getClaim("access_token", String::class) ?: run {
                     call.respond(HttpStatusCode.Forbidden, "No access token")
                     return@get
                 }
@@ -47,25 +47,8 @@ fun Application.configureRouting(
                 call.respond(mapOf("name" to userInfo.givenName, "avatar" to userInfo.picture))
             }
         }
-        authenticate(oauthConfig.name) {
-            get("/login") {
-                call.respondRedirect("/callback")
-                // Automatically redirects to `authorizeUrl`
-            }
-            get("/callback") {
-                // Receives the authorization code and exchanges it for an access token
-                (call.principal() as OAuthAccessTokenResponse.OAuth2?)?.let { principal ->
-                    val accessToken = principal.accessToken
-                    val refreshToken = principal.refreshToken ?: ""
-                    println(refreshToken)
-                    val info = getUserInfo(accessToken, oauthConfig, httpClient)
-                    val userReq = UserRequest(info.name, refreshToken, info)
-                    val userId = repository.createUser(userReq.toDomain())
-                    val jwtToken = jwtConfig.createToken(clock, accessToken, userId,3600)
-                    call.respond(mapOf("token" to jwtToken))
-                }
-            }
-        }
+
+
     }
 }
 

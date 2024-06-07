@@ -11,6 +11,5 @@ data class UserInfo(
     val givenName: String,
     @SerialName("family_name")
     val familyName: String,
-    val picture: String,
-    val locale: String
+    val picture: String
 )

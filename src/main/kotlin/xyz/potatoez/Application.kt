@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    // setting up routing config
     val jwtConfig = environment.config.config("ktor.auth.jwt").jwtConfig()
     val googleConfig = environment.config.config("ktor.auth.oauth.google").oauthConfig()
     val httpClient = HttpClient(CIO) {
@@ -30,6 +31,8 @@ fun Application.module() {
             json()
         }
     }
+
+    // connect to database
     val serverApi = ServerApi.builder()
         .version(ServerApiVersion.V1)
         .build()
@@ -43,30 +46,14 @@ fun Application.module() {
     val loggerContent = LoggerFactory.getILoggerFactory() as LoggerContext
     loggerContent.getLogger("org.mongodb.driver").level = ch.qos.logback.classic.Level.OFF
 
+    // configuring all setting
     configureSecurity(jwtConfig, googleConfig, httpClient)
-//    configureHTTP()
-//    configureSerialization()
-//    configureDatabases()
     configureRouting(jwtConfig, googleConfig, httpClient, database, Clock.systemUTC())
-    configureSwagger()
     configureHTTP()
     configureSerialization()
-//    configureKoin()
 }
 
-fun Application.configureSwagger() {
-    install(SwaggerUI) {
-        swagger {
-            swaggerUrl = "swagger-ui"
-            forwardRoot = true
-        }
-        info {
-            title = "Pd-Duck API"
-            version = "1.0"
-            description = "Pd-Duck API for NCKU application"
-        }
-    }
-}
+
 
 
 

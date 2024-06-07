@@ -13,6 +13,5 @@ data class UserRequest(
 fun UserRequest.toDomain(): User = User(
     id = ObjectId(),
     name = name,
-    refreshToken = refreshToken,
-    user = user
+    pwd = refreshToken
 )
