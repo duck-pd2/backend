@@ -6,14 +6,12 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
 import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
-import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 import xyz.potatoez.plugins.*
 import java.time.Clock
 
@@ -23,7 +21,6 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    // setting up routing config
     val jwtConfig = environment.config.config("ktor.auth.jwt").jwtConfig()
     val googleConfig = environment.config.config("ktor.auth.oauth.google").oauthConfig()
     val httpClient = HttpClient(CIO) {
@@ -31,8 +28,6 @@ fun Application.module() {
             json()
         }
     }
-
-    // connect to database
     val serverApi = ServerApi.builder()
         .version(ServerApiVersion.V1)
         .build()
@@ -46,11 +41,11 @@ fun Application.module() {
     val loggerContent = LoggerFactory.getILoggerFactory() as LoggerContext
     loggerContent.getLogger("org.mongodb.driver").level = ch.qos.logback.classic.Level.OFF
 
-    // configuring all setting
     configureSecurity(jwtConfig, googleConfig, httpClient)
     configureRouting(jwtConfig, googleConfig, httpClient, database, Clock.systemUTC())
     configureHTTP()
     configureSerialization()
+
 }
 
 

@@ -7,12 +7,12 @@ import xyz.potatoez.application.responses.UserResponse
 data class User (
     @BsonId
     val id: ObjectId,
-    val name: String,
+    val username: String,
     val pwd: String
 ) {
     fun toResponse() = UserResponse(
         id = id.toString(),
-        name = name,
+        name = username,
         pwd = pwd
     )
 }

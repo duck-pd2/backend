@@ -28,6 +28,11 @@ class UserRepositoryImpl (
         return null
     }
 
+    override suspend fun readUser(name: String): User? =
+        mongoDatabase.getCollection<User>(USER_COLLECTION).withDocumentClass<User>()
+            .find(Filters.eq("username", name))
+            .firstOrNull()
+
     override suspend fun readUser(id: ObjectId): User? =
         mongoDatabase.getCollection<User>(USER_COLLECTION).withDocumentClass<User>()
             .find(Filters.eq("_id", id))
@@ -37,9 +42,8 @@ class UserRepositoryImpl (
         try {
             val query = Filters.eq("_id", id)
             val updates = Updates.combine(
-                Updates.set(User::name.name, user.name),
-                Updates.set(User::refreshToken.name, user.refreshToken),
-                Updates.set(User::user.name, user.user),
+                Updates.set(User::username.name, user.username),
+                Updates.set(User::pwd.name, user.pwd)
             )
             val options = UpdateOptions().upsert(true)
             val result =

@@ -2,16 +2,15 @@ package xyz.potatoez.application.requests
 
 import org.bson.types.ObjectId
 import xyz.potatoez.domain.entity.User
-import xyz.potatoez.model.UserInfo
+import xyz.potatoez.utils.hashPwd
 
 data class UserRequest(
-    val name: String,
-    val refreshToken: String,
-    val user: UserInfo
+    val username: String,
+    val pwd: String
 )
 
 fun UserRequest.toDomain(): User = User(
     id = ObjectId(),
-    name = name,
-    pwd = refreshToken
+    username = username,
+    pwd = hashPwd(pwd)
 )

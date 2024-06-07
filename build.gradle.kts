@@ -50,4 +50,6 @@ dependencies {
     //Koin Dependency Injection
     implementation("io.insert-koin:koin-ktor:3.6.0-Beta4")
     implementation("io.insert-koin:koin-logger-slf4j:3.6.0-Beta4")
+
+    implementation("org.mindrot:jbcrypt:0.4")
 }
