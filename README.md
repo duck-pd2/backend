@@ -60,6 +60,7 @@ expiration times: 3600s
 
 <details>
     <summary> <code>POST</code> <code>/login</code><code>Login to account</code></summary>
+
 Success: -status code `200` with JSON object
 
 ```json
