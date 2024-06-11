@@ -34,7 +34,7 @@ fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clo
             val id = repository.createUser(user)
 
             if (id == null) {
-                call.respond(HttpStatusCode.BadRequest, mapOf("message" to "database error"))
+                call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "database error"))
                 return@post
             }
 

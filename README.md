@@ -40,7 +40,7 @@ Missing password: -status code `400` with JSON object
 }
 ```
 
-Account Exist: -status code `400`
+Account Exist: -status code `400` with JSON object
 ```json
 {
   "message": "AccountAlreadyExist"
@@ -52,14 +52,22 @@ Account Exist: -status code `400`
 ##### JWT token
 
 ```
+"exp": 3600s
 "user_id": <id>
-expiration times: 3600s
 ```
 
 </details>
 
 <details>
     <summary> <code>POST</code> <code>/login</code><code>Login to account</code></summary>
+
+##### Data
+```
+ {
+    "username":<username>,
+    "pwd": <pwd>
+ }
+```
 
 Success: -status code `200` with JSON object
 
@@ -83,14 +91,14 @@ Missing password: -status code `400` with JSON object
 }
 ```
 
-User Not Found: -status code `401`
+User Not Found: -status code `401` with JSON object
 ```json
 {
   "message": "UserNotFound"
 }
 ```
 
-Wrong password: -status code `401`
+Wrong password: -status code `401` with JSON object
 ```json
 {
   "message": "WrongPassword"
@@ -100,8 +108,10 @@ Wrong password: -status code `401`
 ##### JWT token
 
 ```
+
+"exp": 3600s
 "user_id": <id>
-expiration times: 3600s
+
 ```
 </details>
 
