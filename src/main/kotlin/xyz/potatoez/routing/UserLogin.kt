@@ -13,7 +13,7 @@ import xyz.potatoez.utils.checkPwd
 import xyz.potatoez.utils.hashPwd
 import java.time.Clock
 
-fun Route.userLogin(repository : UserRepository, jwtConfig: JWTConfig,  clock: Clock) {
+fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clock) {
     post("/register") {
         try {
             val userdata = call.receiveParameters()
@@ -42,7 +42,7 @@ fun Route.userLogin(repository : UserRepository, jwtConfig: JWTConfig,  clock: C
             val token = jwtConfig.createToken(clock, objId, 3600)
             call.respond(HttpStatusCode.Created, mapOf("token" to token))
 
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             System.err.println(e)
             call.respond(HttpStatusCode.InternalServerError, mapOf("message" to e.localizedMessage))
             return@post
@@ -54,7 +54,8 @@ fun Route.userLogin(repository : UserRepository, jwtConfig: JWTConfig,  clock: C
             val username: String = userdata["username"] ?: run {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    mapOf("message" to "Missing username"))
+                    mapOf("message" to "Missing username")
+                )
                 return@post
             }
             val pwd: String = userdata["pwd"] ?: run {
@@ -62,7 +63,8 @@ fun Route.userLogin(repository : UserRepository, jwtConfig: JWTConfig,  clock: C
                 return@post
             }
             val user = repository.readUser(username) ?: run {
-                call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "UserNotFound")
+                call.respond(
+                    HttpStatusCode.Unauthorized, mapOf("message" to "UserNotFound")
                 )
                 return@post
             }

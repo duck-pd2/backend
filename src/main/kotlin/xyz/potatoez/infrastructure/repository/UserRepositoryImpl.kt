@@ -11,7 +11,7 @@ import org.bson.types.ObjectId
 import xyz.potatoez.domain.entity.User
 import xyz.potatoez.domain.ports.UserRepository
 
-class UserRepositoryImpl (
+class UserRepositoryImpl(
     private val mongoDatabase: MongoDatabase
 ) : UserRepository {
     companion object {

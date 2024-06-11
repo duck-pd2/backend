@@ -20,7 +20,8 @@ import java.time.Clock
 
 fun Application.configureRouting(
     jwtConfig: JWTConfig, oauthConfig: OAuthConfig,
-    httpClient: HttpClient, database: MongoDatabase, clock: Clock) {
+    httpClient: HttpClient, database: MongoDatabase, clock: Clock
+) {
     val repository: UserRepository = UserRepositoryImpl(database)
     routing {
         get("/") {
