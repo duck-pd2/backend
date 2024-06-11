@@ -49,25 +49,6 @@ fun Application.configureRouting(
             }
         }
         userLogin(repository, jwtConfig, clock)
-//        authenticate(oauthConfig.name) {
-//            get("/login") {
-//                call.respondRedirect("/callback")
-//                // Automatically redirects to `authorizeUrl`
-//            }
-//            get("/callback") {
-//                // Receives the authorization code and exchanges it for an access token
-//                (call.principal() as OAuthAccessTokenResponse.OAuth2?)?.let { principal ->
-//                    val accessToken = principal.accessToken
-//                    val refreshToken = principal.refreshToken ?: ""
-//                    val info = getUserInfo(accessToken, oauthConfig, httpClient)
-//                    val userReq: UserRequest = UserRequest(info.name, refreshToken, info)
-//                    val userId = repository.createUser(userReq.toDomain())
-//                    val jwtToken = jwtConfig.createToken(clock, accessToken, userId,3600)
-////                    call.respondText(jwtToken, ContentType.Text.Plain)
-//                    call.respond(mapOf("token" to jwtToken))
-//                }
-//            }
-//        }
     }
 }
 
