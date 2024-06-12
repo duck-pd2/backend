@@ -46,7 +46,6 @@ dependencies {
 
     // mongodb server side
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
-    //implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.10.1") // Add this dependency
 
     //Koin Dependency Injection
     implementation("io.insert-koin:koin-ktor:3.6.0-Beta4")
