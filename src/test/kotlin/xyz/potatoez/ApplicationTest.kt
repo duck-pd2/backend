@@ -6,16 +6,11 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.*
 import xyz.potatoez.plugins.*
+import xyz.potatoez.utils.ParserICS
 
-class ApplicationTest {
-    @Test
-    fun testRoot() = testApplication {
-        application {
-            configureRouting()
-        }
-        client.get("/").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
-        }
-    }
+fun main (){
+    //val MapList : MutableList<MutableMap<String,String>> = ArrayList()
+    val url :String =  "https://moodle.ncku.edu.tw/calendar/export_execute.php?userid=204431&authtoken=eaa2da79919eefaf40536173ff47f443d2012ae2&preset_what=all&preset_time=custom"
+    val MapList = ParserICS(url)
+    println(MapList)
 }
