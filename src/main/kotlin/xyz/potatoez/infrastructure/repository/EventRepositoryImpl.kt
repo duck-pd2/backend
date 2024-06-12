@@ -19,44 +19,50 @@ class EventRepositoryImpl(
     }
 
     override suspend fun createEvent(event: Event): BsonValue? {
-        try {
+        return try {
             val result = mongoDatabase.getCollection<Event>(EVENT_COLLECTION).insertOne(event)
-            return result.insertedId
+            result.insertedId
         } catch (e: MongoException) {
             System.err.println("Unable to insert due to an error: ${e.message}")
+            null
         }
-        return null
     }
 
-    override suspend fun readEvent(id: ObjectId): Event? =
-        mongoDatabase.getCollection<Event>(EVENT_COLLECTION).find(Filters.eq("_id", id)).firstOrNull()
+    override suspend fun readEvent(id: ObjectId): Event? {
+        return try {
+            mongoDatabase.getCollection<Event>(EVENT_COLLECTION).find(Filters.eq("_id", id)).firstOrNull()
+        } catch (e: MongoException) {
+            System.err.println("Unable to read due to an error: ${e.message}")
+            null
+        }
+    }
 
     override suspend fun updateEvent(id: ObjectId, event: Event): Long {
-        try {
+        return try {
             val query = Filters.eq("_id", id)
             val updates = Updates.combine(
                 Updates.set(Event::title.name, event.title),
                 Updates.set(Event::start.name, event.start),
                 Updates.set(Event::end.name, event.end),
-                Updates.set(Event::description.name, event.description)
+                Updates.set(Event::description.name, event.description),
+                Updates.set(Event::eventClass.name, event.eventClass)
             )
             val options = UpdateOptions().upsert(true)
             val result = mongoDatabase.getCollection<Event>(EVENT_COLLECTION).updateOne(query, updates, options)
-
-            return result.modifiedCount
+            result.modifiedCount
         } catch (e: MongoException) {
-            System.err.println("Unable to update due to an error: $e")
+            System.err.println("Unable to update due to an error: ${e.message}")
+            0
         }
-        return 0
     }
 
     override suspend fun deleteEvent(id: ObjectId): Long {
-        try {
+        return try {
             val result = mongoDatabase.getCollection<Event>(EVENT_COLLECTION).deleteOne(Filters.eq("_id", id))
-            return result.deletedCount
+            result.deletedCount
         } catch (e: MongoException) {
             System.err.println("Unable to delete due to an error: ${e.message}")
-            return 0
+            0
         }
     }
 }

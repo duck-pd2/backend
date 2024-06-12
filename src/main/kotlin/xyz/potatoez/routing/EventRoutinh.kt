@@ -6,7 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import xyz.potatoez.application.requests.EventRequest
 import xyz.potatoez.application.requests.toDomain
-import xyz.potatoez.domain.ports.EventRepository // 使用EventRepository而不是UserRepository
+import xyz.potatoez.domain.ports.EventRepository
 import xyz.potatoez.utils.ParserICS
 
 fun Route.eventRouting(repository: EventRepository) {

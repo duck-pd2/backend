@@ -114,7 +114,7 @@ fun event(inp: String, contentMap: MutableMap<String, String>) {
             contentMap["end"] = "'$time'"
         }
         parts[0].contains("CATEGORIES") -> {
-            contentMap["class"] = "'${parts[1]}'"
+            contentMap["EventClass"] = "'${parts[1]}'"
         }
         parts[0].contains("DESCRIPTION") -> {
             contentMap["description"] = "'${parts[1]}'"
