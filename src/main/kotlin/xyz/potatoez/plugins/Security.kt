@@ -17,6 +17,8 @@ fun Application.configureSecurity(
     httpClient: HttpClient
 ) {
     authentication {
+
+
         jwt(jwtConfig.name) {
             realm = jwtConfig.realm
             verifier(
@@ -30,9 +32,9 @@ fun Application.configureSecurity(
                 if (credential.payload.audience.contains(jwtConfig.audience)) JWTPrincipal(credential.payload) else null
             }
             challenge { scheme, realm ->
-                call.respondText(
-                    "Token to access ${HttpHeaders.WWWAuthenticate} $scheme realm=\"$realm\" is either invalid or expired.",
-                    status = HttpStatusCode.Unauthorized
+                call.respond(
+                    status = HttpStatusCode.Unauthorized,
+                    mapOf("message" to "Token to access ${HttpHeaders.WWWAuthenticate} $scheme realm=$realm is either invalid or expired.")
                 )
             }
         }
