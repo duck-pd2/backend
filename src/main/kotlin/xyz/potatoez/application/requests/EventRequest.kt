@@ -11,11 +11,12 @@ data class EventRequest(val contentMap: Map<String, String>) {
     val eventClass by contentMap
 }
 
-fun EventRequest.toDomain(): Event = Event(
+fun EventRequest.toDomain(userId: ObjectId): Event = Event(
     id = ObjectId(),
     title = title,
     start = start,
     end = end,
     description = description,
-    eventClass = eventClass
+    eventClass = eventClass,
+    userId = userId
 )
