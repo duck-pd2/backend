@@ -39,7 +39,7 @@ fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clo
             }
 
             val objId = id.asObjectId().value
-            val token = jwtConfig.createToken(clock, objId, 3600)
+            val token = jwtConfig.createToken(clock, objId, username, 3600)
             call.respond(HttpStatusCode.Created, mapOf("token" to token))
 
         } catch (e: Exception) {
@@ -76,7 +76,7 @@ fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clo
             }
 
             val id = user.id
-            val token = jwtConfig.createToken(clock, id, 3600)
+            val token = jwtConfig.createToken(clock, id, username,3600)
 
             call.respond(HttpStatusCode.Accepted, mapOf("token" to token))
 

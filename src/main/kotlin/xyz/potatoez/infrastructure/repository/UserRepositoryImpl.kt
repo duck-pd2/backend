@@ -43,7 +43,8 @@ class UserRepositoryImpl(
             val query = Filters.eq("_id", id)
             val updates = Updates.combine(
                 Updates.set(User::username.name, user.username),
-                Updates.set(User::pwd.name, user.pwd)
+                Updates.set(User::pwd.name, user.pwd),
+                Updates.set(User::events.name, user.events)
             )
             val options = UpdateOptions().upsert(true)
             val result =

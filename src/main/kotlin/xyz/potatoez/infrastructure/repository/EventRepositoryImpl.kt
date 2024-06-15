@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.firstOrNull
 import org.bson.BsonValue
 import org.bson.types.ObjectId
 import xyz.potatoez.domain.entity.Event
@@ -28,14 +28,9 @@ class EventRepositoryImpl(
         }
     }
 
-    override suspend fun readEvent(id: ObjectId, type: String): List<Event>? {
+    override suspend fun readEvent(id: ObjectId): Event? {
         return try {
-            val filter = when(type) {
-                "event" -> Filters.eq("_id", id)
-                "user" -> Filters.eq("userId", id)
-                else -> return null
-            }
-            mongoDatabase.getCollection<Event>(EVENT_COLLECTION).find(filter).toList()
+            mongoDatabase.getCollection<Event>(EVENT_COLLECTION).find(Filters.eq("_id", id)).firstOrNull()
         } catch (e: MongoException) {
             System.err.println("Unable to read due to an error: ${e.message}")
             null

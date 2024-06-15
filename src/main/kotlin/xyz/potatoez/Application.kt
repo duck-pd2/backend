@@ -6,10 +6,6 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
 import com.mongodb.ServerApiVersion
 import com.mongodb.kotlin.client.coroutine.MongoClient
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import org.slf4j.LoggerFactory
 import xyz.potatoez.plugins.*
@@ -22,7 +18,6 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     val jwtConfig = environment.config.config("ktor.auth.jwt").jwtConfig()
-    val googleConfig = environment.config.config("ktor.auth.oauth.google").oauthConfig()
 
     val serverApi = ServerApi.builder()
         .version(ServerApiVersion.V1)
