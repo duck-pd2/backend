@@ -23,11 +23,7 @@ fun main(args: Array<String>) {
 fun Application.module() {
     val jwtConfig = environment.config.config("ktor.auth.jwt").jwtConfig()
     val googleConfig = environment.config.config("ktor.auth.oauth.google").oauthConfig()
-    val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json()
-        }
-    }
+
     val serverApi = ServerApi.builder()
         .version(ServerApiVersion.V1)
         .build()
@@ -41,8 +37,8 @@ fun Application.module() {
     val loggerContent = LoggerFactory.getILoggerFactory() as LoggerContext
     loggerContent.getLogger("org.mongodb.driver").level = ch.qos.logback.classic.Level.OFF
 
-    configureSecurity(jwtConfig, googleConfig, httpClient)
-    configureRouting(jwtConfig, googleConfig, httpClient, database, Clock.systemUTC())
+    configureSecurity(jwtConfig)
+    configureRouting(jwtConfig, database, Clock.systemUTC())
     configureHTTP()
     configureSerialization()
 
