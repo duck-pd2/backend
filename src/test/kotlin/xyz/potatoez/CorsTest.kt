@@ -18,7 +18,6 @@ class CorsTest {
             header(AccessControlRequestMethod, "GET")
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
-
         }
     }
 }
