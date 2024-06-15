@@ -10,6 +10,7 @@ import org.bson.types.ObjectId
 import xyz.potatoez.application.requests.EventRequest
 import xyz.potatoez.application.requests.toDomain
 import xyz.potatoez.domain.entity.SerializableEvent
+import xyz.potatoez.domain.entity.User
 import xyz.potatoez.domain.ports.EventRepository
 import xyz.potatoez.domain.ports.UserRepository
 import xyz.potatoez.model.JWTConfig
@@ -28,7 +29,7 @@ fun Route.eventRouting(repository: EventRepository, userRepository: UserReposito
                     return@post
                 }
 
-                userRepository.readUser(userId) ?: run {
+                val user = userRepository.readUser(userId) ?: run {
                     call.respond(HttpStatusCode.NotFound, mapOf("message" to "user not found"))
                     return@post
                 }
@@ -41,7 +42,7 @@ fun Route.eventRouting(repository: EventRepository, userRepository: UserReposito
 
                 // Parsing the ICS file to get the list of events
                 val parsedEvents = parseICS(url)
-
+                val listOfEvents = mutableListOf<ObjectId>()
                 // Storing each event into the database
                 parsedEvents.forEach { eventMap ->
                     val eventRequest = EventRequest(eventMap)
@@ -55,8 +56,15 @@ fun Route.eventRouting(repository: EventRepository, userRepository: UserReposito
                         )
                         return@post
                     }
+                    listOfEvents.add(id.asObjectId().value)
                 }
-
+                val newUser = User(
+                    id = user.id,
+                    username = user.username,
+                    pwd = user.pwd,
+                    events = listOfEvents
+                )
+                userRepository.updateUser(user.id, newUser)
                 call.respond(HttpStatusCode.Created, mapOf("data" to parsedEvents))
 
             } catch (e: Exception) {
@@ -77,15 +85,15 @@ fun Route.eventRouting(repository: EventRepository, userRepository: UserReposito
                     return@get
                 }
 
-                userRepository.readUser(userId) ?: run {
+                val user = userRepository.readUser(userId) ?: run {
                     call.respond(HttpStatusCode.NotFound, mapOf("message" to "user not found"))
                     return@get
                 }
 
-                val eventList = repository.readEvent(userId, "user") ?: run {
-                    call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "read event error"))
+                val eventList = user.events.map { repository.readEvent(it) ?: run {
+                    call.respond(HttpStatusCode.NotFound, mapOf("message" to "event not found"))
                     return@get
-                }
+                } }
 
                 val serializedEventList = eventList.map { SerializableEvent(it) }
 
