@@ -1,5 +1,11 @@
 # NCKUPP-Personal backend
 
+## Run Application
+
+```bat
+gradlew run
+```
+
 ## API interpretation
 
 `API endpoint`: `http://localhost:8080/api/v0`

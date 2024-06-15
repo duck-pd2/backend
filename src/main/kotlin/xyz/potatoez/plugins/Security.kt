@@ -2,19 +2,15 @@ package xyz.potatoez.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import io.ktor.client.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import xyz.potatoez.model.JWTConfig
-import xyz.potatoez.model.OAuthConfig
 
 fun Application.configureSecurity(
-    jwtConfig: JWTConfig,
-    oauthConfig: OAuthConfig,
-    httpClient: HttpClient
+    jwtConfig: JWTConfig
 ) {
     authentication {
 
@@ -38,20 +34,6 @@ fun Application.configureSecurity(
                 )
             }
         }
-        oauth(oauthConfig.name) {
-            urlProvider = { oauthConfig.redirectUrl }
-            providerLookup = {
-                OAuthServerSettings.OAuth2ServerSettings(
-                    name = oauthConfig.name,
-                    authorizeUrl = oauthConfig.authorizeUrl,
-                    accessTokenUrl = oauthConfig.accessTokenUrl,
-                    requestMethod = HttpMethod.Post,
-                    clientId = oauthConfig.clientId,
-                    clientSecret = oauthConfig.clientSecret,
-                    defaultScopes = oauthConfig.defaultScopes
-                )
-            }
-            client = httpClient
-        }
+
     }
 }
