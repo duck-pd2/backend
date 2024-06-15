@@ -23,7 +23,6 @@ fun Application.configureRouting(
         get("/") {
             call.respondText("Hello world")
         }
-
         route("/api/v$version") {
             userLogin(userRepository, jwtConfig, clock)
             eventRouting(eventRepository, userRepository, jwtConfig)

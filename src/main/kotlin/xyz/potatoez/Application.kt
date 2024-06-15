@@ -18,6 +18,7 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     val jwtConfig = environment.config.config("ktor.auth.jwt").jwtConfig()
+
     val serverApi = ServerApi.builder()
         .version(ServerApiVersion.V1)
         .build()

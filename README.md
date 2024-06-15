@@ -1,14 +1,22 @@
 # NCKUPP-Personal backend
 
-## Run Application
+## Run Application in CLI
 
+### Windows
 ```bat
+gradlew.bat
 gradlew run
+```
+
+### Linux/MacOS
+```
+./gradlew
+./gradlew run
 ```
 
 ## API interpretation
 
-`API endpoint`: `http://localhost:8080/api/v0`
+`API endpoint`: `https://pd.potatoez.xyz/api/v0`
 
 <details>
     <summary> <code>POST</code> <code>/register</code><code>register an account</code></summary>
@@ -242,4 +250,11 @@ user id invalid: -status code `404` with JSON object
 
 
 </details>
-    
+
+## Q&A
+
+Q: Permission denied when executing ./gradlew in linux
+
+A: `chmod +x gradlew`
+
+Making Issue for problem shooting or bug report or feature requests is welcome.
