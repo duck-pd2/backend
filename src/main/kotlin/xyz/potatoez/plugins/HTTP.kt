@@ -15,7 +15,9 @@ fun Application.configureHTTP() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Origin)
         allowHeader("MyCustomHeader")
+        allowHost("www.example.com", schemes = listOf("http", "https"))
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
     install(CachingHeaders) {
