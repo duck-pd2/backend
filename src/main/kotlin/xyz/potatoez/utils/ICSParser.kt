@@ -1,8 +1,8 @@
 package xyz.potatoez.utils
 
 import java.io.*
-import java.net.URL
 import java.net.URI
+import java.net.URL
 
 fun parseICS(urlString: String): MutableList<MutableMap<String, String>> {
     val mapList: MutableList<MutableMap<String, String>> = ArrayList()
@@ -64,6 +64,8 @@ fun parseICSFile(fileName: String, mapList: MutableList<MutableMap<String, Strin
 
                             event(line!!, contentMap)
                         }
+                        contentMap.put("color", "#F7F7F7")
+                        contentMap.put("tags", "[]")
                         mapList.add(contentMap)
                     }
                 }

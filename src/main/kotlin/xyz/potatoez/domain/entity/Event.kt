@@ -12,17 +12,21 @@ data class Event(
     val end: String,
     val description: String,
     val eventClass: String,
-    val userId: ObjectId?
+    val color: String,
+    val tags: List<String>
 )
 
 @Serializable
 data class SerializableEvent(
+    val id: String,
     val title: String,
     val start: String,
     val end: String,
     val description: String,
     val eventClass: String,
+    val color: String,
+    val tags: List<String>
 ) {
-    constructor(event: Event) : this(event.title, event.start, event.start, event.end, event.eventClass)
+    constructor(event: Event) : this(event.id.toString(), event.title, event.start, event.end, event.description, event.eventClass, event.color, event.tags)
 
 }

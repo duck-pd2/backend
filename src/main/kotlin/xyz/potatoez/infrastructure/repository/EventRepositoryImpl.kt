@@ -45,7 +45,10 @@ class EventRepositoryImpl(
                 Updates.set(Event::start.name, event.start),
                 Updates.set(Event::end.name, event.end),
                 Updates.set(Event::description.name, event.description),
-                Updates.set(Event::eventClass.name, event.eventClass)
+                Updates.set(Event::eventClass.name, event.eventClass),
+                Updates.set(Event::color.name, event.color),
+                Updates.set(Event::tags.name, event.tags),
+
             )
             val options = UpdateOptions().upsert(true)
             val result = mongoDatabase.getCollection<Event>(EVENT_COLLECTION).updateOne(query, updates, options)

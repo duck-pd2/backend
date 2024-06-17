@@ -43,6 +43,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     runtimeOnly("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.github.smiley4:ktor-swagger-ui:2.10.0")
+    implementation("io.ktor:ktor-client-resources:$ktor_version")
 
     // mongodb server side
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
