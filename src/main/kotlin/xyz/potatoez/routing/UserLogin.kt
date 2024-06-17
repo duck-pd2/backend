@@ -1,6 +1,7 @@
 package xyz.potatoez.routing
 
 import io.ktor.http.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,21 +17,14 @@ import java.time.Clock
 fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clock) {
     post("/register") {
         try {
-            val userdata = call.receiveParameters()
-            val username: String = userdata["username"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Missing username"))
-                return@post
-            }
-            val pwd: String = userdata["pwd"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Missing password"))
-                return@post
-            }
-            if (repository.readUser(username) != null) {
+            val userdata = call.receive<UserRequest>()
+
+            if (repository.readUser(userdata.username) != null) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("message" to "AccountAlreadyExist"))
                 return@post
             }
 
-            val user = UserRequest(username, pwd).toDomain()
+            val user = UserRequest(userdata.username, userdata.pwd).toDomain()
             val id = repository.createUser(user)
 
             if (id == null) {
@@ -39,9 +33,11 @@ fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clo
             }
 
             val objId = id.asObjectId().value
-            val token = jwtConfig.createToken(clock, objId, username, 3600)
+            val token = jwtConfig.createToken(clock, objId, userdata.username, 3600)
             call.respond(HttpStatusCode.Created, mapOf("token" to token))
 
+        } catch (e: CannotTransformContentToTypeException) {
+            call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Missing required parameters"))
         } catch (e: Exception) {
             System.err.println(e)
             call.respond(HttpStatusCode.InternalServerError, mapOf("message" to e.localizedMessage))
@@ -50,36 +46,28 @@ fun Route.userLogin(repository: UserRepository, jwtConfig: JWTConfig, clock: Clo
     }
     post("login") {
         try {
-            val userdata = call.receiveParameters()
-            val username: String = userdata["username"] ?: run {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    mapOf("message" to "Missing username")
-                )
-                return@post
-            }
-            val pwd: String = userdata["pwd"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Missing password"))
-                return@post
-            }
-            val user = repository.readUser(username) ?: run {
+            val userdata = call.receive<UserRequest>()
+
+            val user = repository.readUser(userdata.username) ?: run {
                 call.respond(
                     HttpStatusCode.Unauthorized, mapOf("message" to "UserNotFound")
                 )
                 return@post
             }
-            if (!checkPwd(user.pwd, pwd)) {
+            if (!checkPwd(user.pwd, userdata.pwd)) {
                 System.err.println(user.pwd)
-                System.err.println(hashPwd(pwd))
+                System.err.println(hashPwd(userdata.pwd))
                 call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "WrongPassword"))
                 return@post
             }
 
             val id = user.id
-            val token = jwtConfig.createToken(clock, id, username,3600)
+            val token = jwtConfig.createToken(clock, id, userdata.username,3600)
 
             call.respond(HttpStatusCode.Accepted, mapOf("token" to token))
 
+        } catch (e: CannotTransformContentToTypeException) {
+            call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Missing required parameters"))
         } catch (e: Exception) {
             System.err.println(e)
             call.respond(HttpStatusCode.InternalServerError, mapOf("message" to e.localizedMessage))

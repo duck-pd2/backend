@@ -10,3 +10,4 @@ data class User(
     val pwd: String,
     val events: List<ObjectId> = emptyList()
 )
+
